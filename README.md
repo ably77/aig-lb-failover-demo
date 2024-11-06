@@ -280,6 +280,30 @@ Responses should now failover to `qwen-0.5b` since the `openai` upstream is unhe
 {"id": "chatcmpl-693", "object": "chat.completion", "created": 1730846055, "model": "qwen:0.5b", "system_fingerprint": "fp_ollama", "choices": [{"index": 0, "message": {"role": "assistant", "content": "A service mesh provides a centralized solution for managing network traffic. This saves time, bandwidth, and complexity that are typical of managed networks alone. Therefore, using a service mesh is an excellent decision for managing network traffic in your kubernetes cluster."}, "finish_reason": "stop"}], "usage": {"prompt_tokens": 59, "completion_tokens": 50, "total_tokens": 109}}
 ```
 
+## Cleanup
+
+Remove routes
+```bash
+kubectl delete -f failover/openai-to-local
+kubectl delete -f failover/local-to-local
+kubectl delete -f traffic-shift
+```
+
+Delete ollama deployment
+```bash
+kubectl delete -f ollama-deploy
+```
+
+Delete AI Gateway
+```bash
+kubectl delete -f aig-base.yaml
+```
+
+Uninstall Gloo
+```bash
+helm uninstall gloo-ee-test -n gloo-system
+```
+
 ## AI gateway failover metrics (WIP)
 
 Port forward to 19000 of the ai gateway pod
