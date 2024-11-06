@@ -123,6 +123,12 @@ Responses should come from `qwen-0.5b` and `qwen-1.8b` models at a 50/50 distrib
 
 ## Failover Use Cases
 
+![local-to-local-failover-1](images/local-to-local-failover-1.png)
+
+Local to Local Failover
+- Prioritize traffic to higher quality models with failover to lower available models
+- Enhance resiliency and ensure end-user outcomes
+
 ![public-to-local-failover-1](images/public-to-local-failover-1.png)
 
 Public to Local Failover
