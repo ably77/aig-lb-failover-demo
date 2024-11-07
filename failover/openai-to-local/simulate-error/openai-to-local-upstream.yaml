@@ -12,7 +12,10 @@ spec:
       - pool:
         - openai:
             customHost:
-              host: invalidhost.foo.bar
+              # invalid host
+              #host: invalidhost.foo.bar
+              # 429 status code
+              host: httpbin.org/status/429
             model: gpt-4o-mini
             authToken:
               secretRef:
