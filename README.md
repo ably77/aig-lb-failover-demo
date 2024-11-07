@@ -182,7 +182,7 @@ Responses should always come from `qwen-1.8b` if the endpoint is healthy
 {"id": "chatcmpl-939", "object": "chat.completion", "created": 1730845886, "model": "qwen:1.8b", "system_fingerprint": "fp_ollama", "choices": [{"index": 0, "message": {"role": "assistant", "content": "By using a Service Mesh like OpenShift Application Default Services (ADFS) or Istio, you can decouple your applications from the underlying infrastructure. This enables easy scaling and improved fault tolerance. By adopting a Service Mesh, you will be able to build highly available and fault-tolerant kubernetes clusters that leverage the power of open source technologies."}, "finish_reason": "stop"}], "usage": {"prompt_tokens": 59, "completion_tokens": 71, "total_tokens": 130}}
 ```
 
-To simulate an error we can configure the highest priority upstream to have an invalid host `host: invalidhost.foo.bar` or simulate a 429 using the `httpbin.org/status/429` endpoint
+To simulate an error we can configure the highest priority upstream to have an invalid host `host: invalidhost.foo.bar`
 ```bash
 cat failover/local-to-local/simulate-error/failover-upstream.yaml
 ```
@@ -256,6 +256,8 @@ Responses should always come from openai `gpt-4o-mini` if the endpoint is health
 ```
 
 To simulate an error we can configure the highest priority upstream to have an invalid host `host: invalidhost.foo.bar` or simulate a 429 using the `httpbin.org/status/429` endpoint
+
+This time, to simulate an error we can configure the highest priority upstream to simulate a 429 using the `httpbin.org/status/429` endpoint
 ```bash
 cat failover/openai-to-local/simulate-error/openai-to-local-upstream.yaml
 ```

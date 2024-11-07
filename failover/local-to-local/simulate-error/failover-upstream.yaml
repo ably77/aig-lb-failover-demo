@@ -13,10 +13,9 @@ spec:
         - openai:
             customHost:
               # invalid host
-              #host: invalidhost.foo.bar
+              host: invalidhost.foo.bar
               # 429 status code
-              host: httpbin.org/status/429
-              port: 11434
+              #host: httpbin.org/status/429
             model: qwen:1.8b
       - pool:
         - openai:
