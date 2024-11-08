@@ -85,6 +85,18 @@ Leverage correct model per service
 
 ### Setup the Demo
 
+Take a look at the example upstreams configured with additional AI api capabilities
+```bash
+cat traffic-shift/ollama-qwen-0.5-upstream.yaml
+
+cat traffic-shift/ollama-qwen-1.8-upstream.yaml
+```
+
+Next we can review the HTTPRoute that defines a 50-50 traffic split for our two backend LLMs
+```bash
+cat traffic-shift/qwen-5050-httproute.yaml
+```
+
 Configure qwen ai gateway 50-50 weighted traffic shift example
 ```bash
 kubectl apply -f traffic-shift
