@@ -6,7 +6,7 @@
 
 Add repo
 ```bash
-helm repo add gloo-ee-test https://storage.googleapis.com/gloo-ee-test-helm
+helm repo add gloo-ee-helm https://storage.googleapis.com/gloo-ee-helm
 helm repo update
 ```
 
@@ -18,9 +18,9 @@ kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/downloa
 Install gloo gateway
 ```bash
 helm upgrade --install -n gloo-system \
-gloo-ee-test gloo-ee-test/gloo-ee \
+gloo-gateway gloo-ee-helm/gloo-ee \
 --create-namespace \
---version 1.18.0-beta2-beitanyaai-passthrough-token-006f8e6 \
+--version 1.18.0-beta2 \
 --set-string license_key=$GLOO_LICENSE_KEY \
 -f -<<EOF
 gloo:
@@ -321,12 +321,12 @@ kubectl delete -f aig-base.yaml
 
 Uninstall Gloo
 ```bash
-helm uninstall gloo-ee-test -n gloo-system
+helm uninstall gloo-gateway -n gloo-system
 ```
 
-## AI gateway failover metrics (WIP)
+## AI gateway metrics
 
-Port forward to 19000 of the ai gateway pod
+Port forward to 19000 of the ai gateway pod to view metrics
 ```bash
 kubectl port-forward -n gloo-system $(kubectl get pod -l gateway.networking.k8s.io/gateway-name=ai-gateway -n gloo-system -o jsonpath='{.items[0].metadata.name}') 19000:19000
 ```
