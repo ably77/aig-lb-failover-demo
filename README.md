@@ -47,6 +47,11 @@ gateway-portal-web-server:
 EOF
 ```
 
+check to see that gloo gateway and its components have been created
+```bash
+kubectl get pods -n gloo-system 
+```
+
 Install ai gateway
 ```bash
 kubectl apply -f aig-base.yaml
