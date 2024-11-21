@@ -20,7 +20,7 @@ Install gloo gateway
 helm upgrade --install -n gloo-system \
 gloo-gateway gloo-ee-helm/gloo-ee \
 --create-namespace \
---version 1.18.0-beta2 \
+--version 1.18.0-rc1 \
 --set-string license_key=$GLOO_LICENSE_KEY \
 -f -<<EOF
 gloo:
