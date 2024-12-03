@@ -20,7 +20,7 @@ Install gloo gateway
 helm upgrade --install -n gloo-system \
 gloo-gateway gloo-ee-helm/gloo-ee \
 --create-namespace \
---version 1.18.0-rc1 \
+--version 1.18.0-rc3 \
 --set-string license_key=$GLOO_LICENSE_KEY \
 -f -<<EOF
 gloo:
@@ -109,12 +109,13 @@ kubectl apply -f traffic-shift
 
 Get ai gateway LB address
 ```bash
-kubectl get svc -n gloo-system | grep gloo-proxy-ai-gateway
+export GATEWAY_IP=$(kubectl get svc -n gloo-system gloo-proxy-ai-gateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}')
+echo "Gateway IP: $GATEWAY_IP"
 ```
 
 Curl ai gateway endpoint for qwen model served by ollama (note no model defined)
 ```bash
-curl http://192.168.107.2:8080/qwen   -H "Content-Type: application/json" -d '{
+curl http://$GATEWAY_IP:8080/qwen   -H "Content-Type: application/json" -d '{
     "messages": [
       {
         "role": "system",
@@ -179,7 +180,7 @@ kubectl apply -f failover/local-to-local
 
 Curl ai gateway /failover endpoint
 ```bash
-curl http://192.168.107.2:8080/failover   -H "Content-Type: application/json" -d '{
+curl http://$GATEWAY_IP:8080/failover   -H "Content-Type: application/json" -d '{
     "messages": [
       {
         "role": "system",
@@ -211,7 +212,7 @@ kubectl apply -f failover/local-to-local/simulate-error
 
 Curl ai gateway /failover endpoint
 ```bash
-curl http://192.168.107.2:8080/failover   -H "Content-Type: application/json" -d '{
+curl http://$GATEWAY_IP:8080/failover   -H "Content-Type: application/json" -d '{
     "messages": [
       {
         "role": "system",
@@ -252,7 +253,7 @@ kubectl apply -f failover/openai-to-local
 
 curl ai gateway /openai endpoint
 ```bash
-curl http://192.168.107.2:8080/openai   -H "Content-Type: application/json" -d '{
+curl http://$GATEWAY_IP:8080/openai   -H "Content-Type: application/json" -d '{
     "messages": [
       {
         "role": "system",
@@ -286,7 +287,7 @@ kubectl apply -f failover/openai-to-local/simulate-error/
 
 curl ai gateway /openai endpoint
 ```bash
-curl http://192.168.107.2:8080/openai   -H "Content-Type: application/json" -d '{
+curl http://$GATEWAY_IP:8080/openai   -H "Content-Type: application/json" -d '{
     "messages": [
       {
         "role": "system",
