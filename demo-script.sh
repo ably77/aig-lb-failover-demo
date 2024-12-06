@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export AIGW_PORT="8080"
+
 echo "Starting the Load Balancing and Failover Demo..."
 echo
 
@@ -41,7 +43,7 @@ while true; do
   fi
 
   echo "Sending request to AI Gateway..."
-  curl http://$GATEWAY_IP:8080/qwen -H "Content-Type: application/json" -d '{
+  curl http://$GATEWAY_IP:$AIGW_PORT/qwen -H "Content-Type: application/json" -d '{
       "messages": [
         {
           "role": "system",
@@ -79,7 +81,7 @@ while true; do
   fi
 
   echo "Sending request to failover endpoint..."
-  curl http://$GATEWAY_IP:8080/failover -H "Content-Type: application/json" -d '{
+  curl http://$GATEWAY_IP:$AIGW_PORT/failover -H "Content-Type: application/json" -d '{
       "messages": [
         {
           "role": "system",
@@ -115,7 +117,7 @@ while true; do
   fi
 
   echo "Sending request to failover endpoint..."
-  curl http://$GATEWAY_IP:8080/failover -H "Content-Type: application/json" -d '{
+  curl http://$GATEWAY_IP:$AIGW_PORT/failover -H "Content-Type: application/json" -d '{
       "messages": [
         {
           "role": "system",
@@ -156,7 +158,7 @@ while true; do
   fi
 
   echo "Sending request to OpenAI endpoint..."
-  curl http://$GATEWAY_IP:8080/openai -H "Content-Type: application/json" -d '{
+  curl http://$GATEWAY_IP:$AIGW_PORT/openai -H "Content-Type: application/json" -d '{
       "messages": [
         {
           "role": "system",
@@ -191,7 +193,7 @@ while true; do
   fi
 
   echo "Sending request to OpenAI endpoint with simulated error..."
-  curl http://$GATEWAY_IP:8080/openai -H "Content-Type: application/json" -d '{
+  curl http://$GATEWAY_IP:$AIGW_PORT/openai -H "Content-Type: application/json" -d '{
       "messages": [
         {
           "role": "system",

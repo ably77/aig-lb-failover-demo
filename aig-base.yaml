@@ -1,15 +1,3 @@
-# ====================================
-# Processing environment: environments/gloo-gateway/gateway-api/1.18/ai-gateway/aigw-config/base
-# ------------------------------------
-# Date: Mon Nov  4 13:57:26 PST 2024
-# ====================================
-# ------------------------------------
-# Found kustomization.yaml in: environments/gloo-gateway/gateway-api/1.18/ai-gateway/aigw-config/base
-# Running 'kubectl kustomize'...
-# Successfully ran 'kubectl kustomize' in environments/gloo-gateway/gateway-api/1.18/ai-gateway/aigw-config/base
-# ------------------------------------
-# Kustomized output for environments/gloo-gateway/gateway-api/1.18/ai-gateway/aigw-config/base:
----
 apiVersion: gateway.gloo.solo.io/v1alpha1
 kind: GatewayParameters
 metadata:
