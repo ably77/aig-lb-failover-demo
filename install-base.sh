@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export GLOO_VERSION="1.18.0-rc4"
+export GLOO_VERSION="1.18.0-rc1"
 
 # Use the GLOO_LICENSE_KEY environment variable if set, otherwise prompt the user
 if [[ -z "$GLOO_LICENSE_KEY" ]]; then
@@ -59,7 +59,7 @@ kubectl wait deploy --all -n gloo-system \
     --for=condition=Available --timeout=120s
 
 echo "### Installing AI Gateway..."
-kubectl apply -f aig-base.yaml
+kubectl apply -f ai-gateway
 
 echo "### Checking AI Gateway proxy components..."
 

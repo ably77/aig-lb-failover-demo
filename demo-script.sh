@@ -3,46 +3,48 @@
 export AIGW_PORT="8080"
 
 echo "Starting the Load Balancing and Failover Demo..."
-echo
 
 # Step 1: Review Example Upstreams
 echo
 read -p "Step 1: Review example upstream configurations. Press enter to proceed..."
+echo
 cat traffic-shift/ollama-qwen-0.5-upstream.yaml
+echo
+echo "---"
 cat traffic-shift/ollama-qwen-1.8-upstream.yaml
 echo
 
 # Step 2: Review HTTPRoute for 50-50 Traffic Split
 echo
 read -p "Step 2: Review HTTPRoute for 50-50 traffic split. Press enter to proceed..."
+echo
 cat traffic-shift/qwen-5050-httproute.yaml
 echo
 
 # Step 3: Configure Traffic Shift
-echo
 read -p "Step 3: Apply 50-50 traffic shift configuration. Press enter to proceed..."
 kubectl apply -f traffic-shift
 echo
 
 # Step 4: Get AI Gateway Load Balancer Address
-echo
 read -p "Step 4: Retrieve the AI Gateway Load Balancer address. Press enter to proceed..."
 export GATEWAY_IP=$(kubectl get svc -n gloo-system gloo-proxy-ai-gateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}')
 echo "Gateway IP: $GATEWAY_IP"
 echo
 
 # Step 5: Test Traffic Distribution
-echo
 echo "Step 5: Test the traffic distribution."
 
 while true; do
   read -p "Press Enter to send a request, or type 'next' to move on: " user_input
   if [[ "$user_input" == "next" ]]; then
     echo "Exiting traffic distribution test."
+    echo
     break
   fi
 
   echo "Sending request to AI Gateway..."
+  echo
   curl http://$GATEWAY_IP:$AIGW_PORT/qwen -H "Content-Type: application/json" -d '{
       "messages": [
         {
@@ -62,25 +64,30 @@ while true; do
 done
 
 # Step 6: Configure Local-to-Local Failover
-echo
 read -p "Step 6: Configure local-to-local failover example. Press enter to proceed..."
+echo
 cat failover/local-to-local/failover-upstream.yaml
+echo
+echo "---"
 cat failover/local-to-local/failover-route.yaml
+echo
 kubectl apply -f failover/local-to-local
+echo
 echo "Local-to-local failover configuration applied."
 echo
 
 # Step 7: Test Failover
-echo
 echo "Testing /failover endpoint."
 
 while true; do
   read -p "Press Enter to send a request, or type 'next' to move on: " user_input
+  echo
   if [[ "$user_input" == "next" ]]; then
     break
   fi
 
   echo "Sending request to failover endpoint..."
+  echo
   curl http://$GATEWAY_IP:$AIGW_PORT/failover -H "Content-Type: application/json" -d '{
       "messages": [
         {
@@ -98,12 +105,15 @@ while true; do
   echo "Responses should come from qwen-1.8b unless it's unhealthy, in which case it will fail over to qwen-0.5b."
   echo
 done
+echo
 
 # Step 8: Simulate Failover Errors
-echo
 read -p "Step 8: Simulate failover errors. Press enter to proceed..."
+echo
 cat failover/local-to-local/simulate-error/failover-upstream.yaml
+echo
 kubectl apply -f failover/local-to-local/simulate-error
+echo
 echo "Failover configuration with simulated errors applied."
 echo
 echo "Testing /failover endpoint."
@@ -111,12 +121,14 @@ echo "Testing /failover endpoint."
 
 while true; do
   read -p "Press Enter to send a request, or type 'next' to move on: " user_input
+  echo
   if [[ "$user_input" == "next" ]]; then
     echo "Exiting failover error simulation test."
     break
   fi
 
   echo "Sending request to failover endpoint..."
+  echo
   curl http://$GATEWAY_IP:$AIGW_PORT/failover -H "Content-Type: application/json" -d '{
       "messages": [
         {
@@ -138,11 +150,15 @@ done
 # Step 9: Configure OpenAI to Local Failover
 echo
 read -p "Step 9: Configure OpenAI to local failover. Press enter to proceed..."
+echo
 kubectl create secret generic openai-secret -n gloo-system \
 --from-literal="Authorization=Bearer $OPENAI_API_KEY" \
 --dry-run=client -oyaml | kubectl apply -f -
+echo
 cat failover/openai-to-local/openai-to-local-upstream.yaml
+echo
 kubectl apply -f failover/openai-to-local
+echo
 echo "OpenAI to local failover configuration applied."
 echo
 
@@ -152,12 +168,14 @@ echo "Testing OpenAI failover endpoint."
 
 while true; do
   read -p "Press Enter to send a request, or type 'next' to move on: " user_input
+  echo
   if [[ "$user_input" == "next" ]]; then
     echo "Exiting OpenAI failover test."
     break
   fi
 
   echo "Sending request to OpenAI endpoint..."
+  echo
   curl http://$GATEWAY_IP:$AIGW_PORT/openai -H "Content-Type: application/json" -d '{
       "messages": [
         {
@@ -180,6 +198,7 @@ echo
 read -p "Step 11: Simulate error for OpenAI failover. Press enter to proceed..."
 cat failover/openai-to-local/simulate-error/openai-to-local-upstream.yaml
 kubectl apply -f failover/openai-to-local/simulate-error
+echo
 echo "Simulated error configuration applied to OpenAI failover upstream."
 echo
 
