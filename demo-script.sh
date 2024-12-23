@@ -1,6 +1,62 @@
 #!/bin/bash
 
-export AIGW_PORT="8080"
+# Prompt the user for protocol with predefined options
+echo "Select the protocol:"
+echo "1) http"
+echo "2) https"
+read -p "Enter your choice: " PROTOCOL_CHOICE
+
+case $PROTOCOL_CHOICE in
+  1|"")
+    PROTOCOL="http"
+    ;;
+  2)
+    PROTOCOL="https"
+    ;;
+  *)
+    echo "Invalid choice. Defaulting to http."
+    PROTOCOL="http"
+    ;;
+esac
+
+# Prompt the user for port with predefined options
+echo
+echo "Select the port:"
+if [ "$PROTOCOL" == "http" ]; then
+  echo "1) 8080 (default)"
+elif [ "$PROTOCOL" == "https" ]; then
+  echo "1) 443 (default)"
+fi
+echo "2) Custom"
+
+read -p "Enter your choice: " PORT_CHOICE
+
+case $PORT_CHOICE in
+  1|"")
+    if [ "$PROTOCOL" == "http" ]; then
+      AIGW_PORT="8080"
+    elif [ "$PROTOCOL" == "https" ]; then
+      AIGW_PORT="443"
+    fi
+    ;;
+  2)
+    read -p "Enter your custom port: " CUSTOM_PORT
+    AIGW_PORT=$CUSTOM_PORT
+    ;;
+  *)
+    echo "Invalid choice. Defaulting to the protocol's default port."
+    if [ "$PROTOCOL" == "http" ]; then
+      AIGW_PORT="8080"
+    elif [ "$PROTOCOL" == "https" ]; then
+      AIGW_PORT="443"
+    fi
+    ;;
+esac
+
+echo
+echo "Using protocol: $PROTOCOL"
+echo "Using port: $AIGW_PORT"
+echo
 
 echo "Starting the Load Balancing and Failover Demo..."
 
@@ -45,7 +101,7 @@ while true; do
 
   echo "Sending request to AI Gateway..."
   echo
-  curl http://$GATEWAY_IP:$AIGW_PORT/qwen -H "Content-Type: application/json" -d '{
+  curl -ik $PROTOCOL://$GATEWAY_IP:$AIGW_PORT/qwen -H "Content-Type: application/json" -d '{
       "messages": [
         {
           "role": "system",
@@ -88,7 +144,7 @@ while true; do
 
   echo "Sending request to failover endpoint..."
   echo
-  curl http://$GATEWAY_IP:$AIGW_PORT/failover -H "Content-Type: application/json" -d '{
+  curl -ik $PROTOCOL://$GATEWAY_IP:$AIGW_PORT/failover -H "Content-Type: application/json" -d '{
       "messages": [
         {
           "role": "system",
@@ -129,7 +185,7 @@ while true; do
 
   echo "Sending request to failover endpoint..."
   echo
-  curl http://$GATEWAY_IP:$AIGW_PORT/failover -H "Content-Type: application/json" -d '{
+  curl -ik $PROTOCOL://$GATEWAY_IP:$AIGW_PORT/failover -H "Content-Type: application/json" -d '{
       "messages": [
         {
           "role": "system",
@@ -176,7 +232,7 @@ while true; do
 
   echo "Sending request to OpenAI endpoint..."
   echo
-  curl http://$GATEWAY_IP:$AIGW_PORT/openai -H "Content-Type: application/json" -d '{
+  curl -ik $PROTOCOL://$GATEWAY_IP:$AIGW_PORT/openai -H "Content-Type: application/json" -d '{
       "messages": [
         {
           "role": "system",
@@ -189,6 +245,7 @@ while true; do
       ]
     }'
   echo
+  echo
   echo "Responses should initially come from OpenAI unless the upstream is unhealthy, in which case it will fail over to qwen-0.5b."
   echo
 done
@@ -197,6 +254,7 @@ done
 echo
 read -p "Step 11: Simulate error for OpenAI failover. Press enter to proceed..."
 cat failover/openai-to-local/simulate-error/openai-to-local-upstream.yaml
+echo
 kubectl apply -f failover/openai-to-local/simulate-error
 echo
 echo "Simulated error configuration applied to OpenAI failover upstream."
@@ -212,7 +270,7 @@ while true; do
   fi
 
   echo "Sending request to OpenAI endpoint with simulated error..."
-  curl http://$GATEWAY_IP:$AIGW_PORT/openai -H "Content-Type: application/json" -d '{
+  curl -ik $PROTOCOL://$GATEWAY_IP:$AIGW_PORT/openai -H "Content-Type: application/json" -d '{
       "messages": [
         {
           "role": "system",
